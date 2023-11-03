@@ -49,6 +49,13 @@ class EntryQueryOptions
     public $limit = 50;
 
     /**
+     * The org id.
+     *
+     * @var string|int
+     */
+    public $orgId;
+
+    /**
      * Create new entry query options from the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -56,13 +63,32 @@ class EntryQueryOptions
      */
     public static function fromRequest(Request $request)
     {
-        return (new static)
-                ->batchId($request->batch_id)
-                ->uuids($request->uuids)
-                ->beforeSequence($request->before)
-                ->tag($request->tag)
-                ->familyHash($request->family_hash)
-                ->limit($request->take ?? 50);
+        $result = (new static)
+        ->batchId($request->batch_id)
+        ->uuids($request->uuids)
+        ->beforeSequence($request->before)
+        ->tag($request->tag)
+        ->familyHash($request->family_hash)
+        ->limit($request->take ?? 50);
+
+        if($request->route()->getName() === 'telescope-api.requests'){
+            $result->orgId(auth('admin')->user()->org->org_id ?? '10000000');
+        }
+
+        return $result;
+    }
+
+  /**
+     * Set the batch ID for the query.
+     *
+     * @param  string  $orgId
+     * @return $this
+     */
+    public function orgId(?string $orgId)
+    {
+        $this->orgId = $orgId;
+
+        return $this;
     }
 
     /**

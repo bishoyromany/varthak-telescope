@@ -49,7 +49,7 @@ Route::post('/telescope-api/models', 'ModelsController@index');
 Route::get('/telescope-api/models/{telescopeEntryId}', 'ModelsController@show');
 
 // Requests entries...
-Route::post('/telescope-api/requests', 'RequestsController@index');
+Route::any('/telescope-api/requests', 'RequestsController@index')->name("telescope-api.requests");
 Route::get('/telescope-api/requests/{telescopeEntryId}', 'RequestsController@show');
 
 // View entries...
