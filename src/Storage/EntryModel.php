@@ -65,9 +65,27 @@ class EntryModel extends Model
                 ->whereTag($query, $options)
                 ->whereFamilyHash($query, $options)
                 ->whereBeforeSequence($query, $options)
+                ->whereOrgId($query, $options, $type)
                 ->filter($query, $options);
 
         return $query;
+    }
+
+    /**
+     * Scope the query for the given org ID.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Laravel\Telescope\Storage\EntryQueryOptions  $options
+     * @return $this
+     */
+    protected function whereOrgId($query, EntryQueryOptions $options, $type)
+    {
+        $query->when($options->orgId && $type === 'request', function ($query) use ($options){
+            $orgId = $options->orgId;
+            return $query->whereRaw("content LIKE '%:$orgId}%' OR content LIKE '%:$orgId,%'");
+        });
+
+        return $this;
     }
 
     /**

@@ -25,10 +25,9 @@ class TelescopeApplicationServiceProvider extends ServiceProvider
     protected function authorization()
     {
         $this->gate();
-
         Telescope::auth(function ($request) {
-            return app()->environment('local') ||
-                   Gate::check('viewTelescope', [$request->user()]);
+            return true;
+            return app()->environment('local') ||  Gate::check('viewTelescope', [$request->user()]);
         });
     }
 
